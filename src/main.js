@@ -551,4 +551,13 @@ const wire = () => {
   window.addEventListener("orientationchange", () => setTimeout(movePill, 250));
 };
 
+/* offline + installable: the whole app is a handful of static files */
+const secureOrigin =
+  location.protocol === "https:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+if ("serviceWorker" in navigator && secureOrigin) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
 boot();
