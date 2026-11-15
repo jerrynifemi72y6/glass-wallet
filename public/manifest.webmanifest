@@ -1,0 +1,15 @@
+{
+  "name": "Glass Wallet",
+  "short_name": "Wallet",
+  "description": "An offline money tracker where your budget is a glass of liquid.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#04161b",
+  "theme_color": "#051d24",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

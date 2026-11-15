@@ -1,0 +1,6 @@
+{
+  "appId": "com.jerry.glasswallet",
+  "appName": "Glass Wallet",
+  "webDir": "dist",
+  "android": { "backgroundColor": "#04161b", "allowMixedContent": true }
+}

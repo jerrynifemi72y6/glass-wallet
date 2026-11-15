@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#051d24" />
+    <meta name="description" content="Glass Wallet — an offline money tracker where your budget is a glass of liquid." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Glass Wallet</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <canvas id="bg"></canvas>
+    <div class="vignette"></div>
+
+    <div id="app">
+      <header class="top">
+        <div class="top__text">
+          <p class="eyebrow" id="month-label">Month</p>
+          <h1 class="h1">Wallet</h1>
+        </div>
+        <button class="round glass" id="btn-settings" aria-label="Settings">
+          <span class="round__dot"></span>
+        </button>
+      </header>
+
+      <main class="screens">
+        <!-- ---------------- HOME ---------------- -->
+        <section class="screen is-active" data-screen="home">
+          <div class="balance">
+            <p class="eyebrow eyebrow--dim">Remaining this month</p>
+            <p class="balance__num" id="remaining">₦0</p>
+            <p class="balance__sub" id="of-budget">of ₦0 budget</p>
+          </div>
+
+          <div class="vessel-wrap">
+            <div class="vessel glass" id="vessel" role="img" aria-label="Your budget as a glass of liquid">
+              <canvas id="liquid"></canvas>
+              <span class="vessel__streak"></span>
+              <span class="vessel__rim"></span>
+            </div>
+            <p class="hint" id="tilt-hint">Tilt the phone to slosh it</p>
+          </div>
+
+          <div class="facts">
+            <div class="fact glass">
+              <span class="fact__k">Spent</span>
+              <span class="fact__v" id="fact-spent">₦0</span>
+            </div>
+            <div class="fact glass">
+              <span class="fact__k">Days left</span>
+              <span class="fact__v" id="fact-days">0</span>
+            </div>
+            <div class="fact glass">
+              <span class="fact__k">Per day</span>
+              <span class="fact__v" id="fact-perday">₦0</span>
+            </div>
+          </div>
+
+          <div class="quick glass">
+            <div class="quick__head">
+              <span class="eyebrow eyebrow--dim">Quick log</span>
+              <button class="link" id="btn-custom">Other amount</button>
+            </div>
+            <div class="chips" id="amount-chips"></div>
+            <div class="chips" id="cat-chips"></div>
+            <p class="quick__hint" id="quick-hint">Tap an amount, then a category</p>
+          </div>
+
+          <p class="eyebrow eyebrow--dim section-title">Recent</p>
+          <div class="recent" id="recent"></div>
+        </section>
+
+        <!-- ---------------- HISTORY ---------------- -->
+        <section class="screen" data-screen="history">
+          <div class="head-row">
+            <h2 class="h2">History</h2>
+            <button class="pill glass" id="btn-export">Export CSV</button>
+          </div>
+          <div class="history" id="history"></div>
+        </section>
+
+        <!-- ---------------- SETTINGS ---------------- -->
+        <section class="screen" data-screen="settings">
+          <h2 class="h2">Settings</h2>
+
+          <div class="card glass">
+            <div class="setting">
+              <div class="setting__text">
+                <span>Monthly budget</span>
+                <em id="budget-echo">₦0</em>
+              </div>
+              <button class="pill pill--sm" id="btn-budget">Change</button>
+            </div>
+            <div class="setting">
+              <div class="setting__text">
+                <span>Currency symbol</span>
+                <em>Used everywhere in the app</em>
+              </div>
+              <input class="field" id="currency" maxlength="3" aria-label="Currency symbol" />
+            </div>
+            <div class="setting">
+              <div class="setting__text">
+                <span>Export</span>
+                <em>Your data only leaves the phone if you send it</em>
+              </div>
+              <button class="pill pill--sm" id="btn-export-2">CSV</button>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="setting">
+              <div class="setting__text">
+                <span>Start a new month</span>
+                <em>Keeps history, resets this month's spending</em>
+              </div>
+              <button class="pill pill--sm" id="btn-newmonth">Reset</button>
+            </div>
+            <div class="setting">
+              <div class="setting__text">
+                <span>Delete everything</span>
+                <em>Removes all expenses and the budget</em>
+              </div>
+              <button class="pill pill--sm pill--danger" id="btn-clear">Delete</button>
+            </div>
+          </div>
+
+          <p class="foot">Glass Wallet · offline only build 1.0<br />No account, no network, nothing leaves the phone.</p>
+        </section>
+      </main>
+
+      <nav class="dock glass" id="dock">
+        <span class="dock__pill" id="dock-pill"></span>
+        <button class="dock__btn is-active" data-tab="home" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4.5l8 6.7V19a1 1 0 0 1-1 1h-4.6v-5.2h-4.8V20H5a1 1 0 0 1-1-1z"/></svg>
+        </button>
+        <button class="dock__btn" data-tab="history" aria-label="History">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+        </button>
+        <button class="dock__btn" data-tab="settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8zm8 3.4c0 .5 0 1-.1 1.4l2 1.5-1.9 3.3-2.3-.9c-.7.6-1.5 1-2.3 1.3L15 21h-3.9l-.4-2.3c-.9-.3-1.6-.7-2.3-1.3l-2.3.9L4.2 15l2-1.5a7 7 0 0 1 0-2.8l-2-1.5 1.9-3.3 2.3.9c.7-.6 1.5-1 2.3-1.3L11.1 3H15l.4 2.3c.9.3 1.6.7 2.3 1.3l2.3-.9 1.9 3.3-2 1.5c.1.4.1.9.1 1.4z" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <div class="scrim" id="scrim"></div>
+
+    <!-- generic sheet: keypad for amounts and for the budget -->
+    <section class="sheet glass" id="sheet" aria-modal="true" role="dialog">
+      <div class="sheet__grab"></div>
+      <div class="sheet__head">
+        <p class="eyebrow eyebrow--dim" id="sheet-label">Log a spend</p>
+        <button class="sheet__close" id="sheet-close" aria-label="Close">✕</button>
+      </div>
+      <p class="sheet__amount" id="sheet-amount">₦0</p>
+      <div class="pad" id="pad"></div>
+      <div class="sheet__cats" id="sheet-cats"></div>
+      <button class="primary" id="sheet-confirm">Log spend</button>
+    </section>
+
+    <div class="toast" id="toast">
+      <span id="toast-text"></span>
+      <button id="toast-action">Undo</button>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
