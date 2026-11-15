@@ -82,7 +82,7 @@ const render = ({ animateLevel = false } = {}) => {
   $("fact-perday").textContent = budget ? money(Math.max(0, remaining) / Math.max(1, dl), currency) : "—";
 
   // the glass
-  const level = budget > 0 ? ratio : 0.06;
+  const level = budget > 0 ? Math.min(0.93, ratio) : 0.08;
   liquid.setLevel(level, animateLevel);
   const m = mood(ratio);
   liquid.tint(...liquidColors[m]);

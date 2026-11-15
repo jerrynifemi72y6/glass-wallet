@@ -126,8 +126,8 @@ export class Backdrop {
       c3: gl.getUniformLocation(prog, "u_c3"),
     };
 
-    this.colors = [hexToRgb("#051d24"), hexToRgb("#0a2c3e"), hexToRgb("#1fae86")];
-    this.target = [hexToRgb("#051d24"), hexToRgb("#0a2c3e"), hexToRgb("#1fae86")];
+    this.colors = [hexToRgb("#04202a"), hexToRgb("#073c4d"), hexToRgb("#25c79a")];
+    this.target = [hexToRgb("#04202a"), hexToRgb("#073c4d"), hexToRgb("#25c79a")];
     this.start = performance.now();
     this.raf = 0;
     this.paused = false;
