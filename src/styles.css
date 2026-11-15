@@ -226,7 +226,61 @@ canvas#bg {
   opacity: 1;
   visibility: visible;
   transform: none;
-  transition: opacity 300ms var(--ease-out), transform 440ms var(--ease-spring), visibility 0s;
+  transition: visibility 0s;
+  animation: screen-in 420ms var(--ease-spring) both;
+}
+
+/* the screen you just left floats away behind the new one */
+.screen.is-leaving:not(.is-active) {
+  visibility: visible;
+  animation: screen-out 280ms var(--ease-out) both;
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--in, 34px), 0, 0) scale(0.968);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes screen-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(var(--out, -26px), 0, 0) scale(0.982);
+  }
+}
+
+/* content arrives in a soft wave, the way ColorOS stages a page */
+.screen.is-active > * {
+  animation: child-in 460ms var(--ease-out) both;
+}
+
+.screen.is-active > *:nth-child(1) { animation-delay: 30ms; }
+.screen.is-active > *:nth-child(2) { animation-delay: 70ms; }
+.screen.is-active > *:nth-child(3) { animation-delay: 110ms; }
+.screen.is-active > *:nth-child(4) { animation-delay: 150ms; }
+.screen.is-active > *:nth-child(5) { animation-delay: 185ms; }
+.screen.is-active > *:nth-child(6) { animation-delay: 215ms; }
+.screen.is-active > *:nth-child(7) { animation-delay: 240ms; }
+.screen.is-active > *:nth-child(n + 8) { animation-delay: 260ms; }
+
+@keyframes child-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---------------- home: balance ---------------- */
@@ -709,8 +763,29 @@ canvas#bg {
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.45);
-  transition: transform 460ms var(--ease-spring), width 460ms var(--ease-spring);
+  transition: left 420ms var(--ease-spring), width 420ms var(--ease-spring);
   pointer-events: none;
+  will-change: left, width;
+}
+
+.dock__pill.is-moving {
+  animation: pill-squash 460ms var(--ease-spring);
+}
+
+@keyframes pill-squash {
+  0% { transform: scaleX(0.78) scaleY(1.06); }
+  55% { transform: scaleX(1.05) scaleY(0.97); }
+  100% { transform: scaleX(1) scaleY(1); }
+}
+
+.dock__btn.is-active svg {
+  animation: icon-pop 460ms var(--ease-spring);
+}
+
+@keyframes icon-pop {
+  0% { transform: scale(0.72) translateY(2px); }
+  55% { transform: scale(1.16); }
+  100% { transform: scale(1); }
 }
 
 .dock__btn {
@@ -735,6 +810,34 @@ canvas#bg {
 
 .dock__btn.is-active {
   color: var(--ink);
+}
+
+/* ColorOS-style light bloom from the tapped tab */
+#flash {
+  position: fixed;
+  z-index: 3;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(140, 255, 224, 0.5) 0%, rgba(140, 255, 224, 0) 68%);
+}
+
+#flash.is-on {
+  animation: bloom 620ms var(--ease-out) both;
+}
+
+@keyframes bloom {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
 }
 
 /* ---------------- sheet ---------------- */
@@ -912,10 +1015,16 @@ canvas#bg {
 
 @media (prefers-reduced-motion: reduce) {
   .screen,
+  .screen.is-active,
+  .screen.is-leaving,
+  .screen.is-active > *,
   .row,
   .row.is-new,
   .sheet,
   .toast,
+  .dock__pill,
+  .dock__btn.is-active svg,
+  #flash.is-on,
   #app.is-ready {
     animation: none !important;
     transition-duration: 1ms !important;

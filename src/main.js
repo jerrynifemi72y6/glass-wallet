@@ -47,6 +47,7 @@ const boot = () => {
   buildPad();
   wire();
   render({ animateLevel: true });
+  movePill();
   app.classList.add("is-ready");
 
   if (!store.state.budget) {
@@ -362,25 +363,63 @@ const haptic = (ms = 10) => {
 
 /* ---------------- tabs ---------------- */
 
-const movePill = () => {
+const movePill = (squash = false) => {
   const active = document.querySelector(".dock__btn.is-active");
   const pill = $("dock-pill");
   if (!active || !pill) return;
-  const dock = $("dock");
-  const w = active.offsetWidth;
-  pill.style.width = `${w - 6}px`;
-  pill.style.transform = `translate3d(${active.offsetLeft - dock.clientLeft}px, 0, 0)`;
+  pill.style.width = `${active.offsetWidth - 6}px`;
+  pill.style.left = `${active.offsetLeft}px`;
+  if (squash) {
+    pill.classList.remove("is-moving");
+    void pill.offsetWidth;
+    pill.classList.add("is-moving");
+  }
+};
+
+const TAB_ORDER = ["home", "history", "settings"];
+let currentTab = "home";
+
+const bloomFrom = (el) => {
+  const flash = $("flash");
+  if (!flash || !el) return;
+  const r = el.getBoundingClientRect();
+  flash.style.left = `${r.left + r.width / 2}px`;
+  flash.style.top = `${r.top + r.height / 2}px`;
+  flash.classList.remove("is-on");
+  void flash.offsetWidth;
+  flash.classList.add("is-on");
 };
 
 const setTab = (tab) => {
+  if (tab === currentTab) return;
+  const dir = TAB_ORDER.indexOf(tab) > TAB_ORDER.indexOf(currentTab) ? 1 : -1;
+  const leaving = document.querySelector(`.screen[data-screen="${currentTab}"]`);
+  const entering = document.querySelector(`.screen[data-screen="${tab}"]`);
+
   document.querySelectorAll(".screen").forEach((s) => {
-    s.classList.toggle("is-active", s.dataset.screen === tab);
+    s.style.setProperty("--in", `${dir * 34}px`);
+    s.style.setProperty("--out", `${-dir * 26}px`);
   });
+
+  if (leaving) {
+    leaving.classList.remove("is-active");
+    leaving.classList.add("is-leaving");
+    window.setTimeout(() => leaving.classList.remove("is-leaving"), 300);
+  }
+  if (entering) {
+    entering.classList.remove("is-leaving");
+    void entering.offsetWidth;
+    entering.classList.add("is-active");
+  }
+
   document.querySelectorAll(".dock__btn").forEach((b) => {
     b.classList.toggle("is-active", b.dataset.tab === tab);
   });
-  movePill();
-  haptic(6);
+
+  currentTab = tab;
+  movePill(true);
+  bloomFrom(document.querySelector(`.dock__btn[data-tab="${tab}"]`));
+  haptic(8);
 };
 
 /* ---------------- wiring ---------------- */
